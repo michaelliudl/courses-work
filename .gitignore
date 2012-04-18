@@ -1,0 +1,12 @@
+.class
+.jar
+.war
+.ear
+bin
+.metadata
+.DS_Store
+.classpath
+.project
+.settings
+classes/
+
