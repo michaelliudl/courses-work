@@ -5,8 +5,6 @@
 bin
 .metadata
 .DS_Store
-.classpath
-.project
 .settings
 classes/
 
@@ -22,3 +20,5 @@ tmp/
 /.bundle
 /vendor/bundle/
 .rspec
+*.swp
+*.pyc
