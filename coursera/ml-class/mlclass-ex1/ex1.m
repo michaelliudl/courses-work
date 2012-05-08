@@ -24,7 +24,7 @@
 %
 
 %% Initialization
-clear all; close all; clc
+clear ; close all; clc
 
 %% ==================== Part 1: Basic Function ====================
 % Complete warmUpExercise.m 
