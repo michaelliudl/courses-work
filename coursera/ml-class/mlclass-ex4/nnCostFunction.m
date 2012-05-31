@@ -69,22 +69,18 @@ for i = 1:m
         matrix_y(i, y(i)) = 1;
     end
 end
-pred = predict(Theta1, Theta2, X)
+a_one = [ones(m, 1) X];
+a_two = [ones(m, 1) sigmoid(a_one * Theta1')];
+a_three = sigmoid(a_two * Theta2');
+J = (-1/m) * sum(sum(matrix_y .* log(a_three) + (1-matrix_y) .* log(1-a_three)));
+%for i = 1:m
+%    for k = 1:num_labels
+%        J = J + matrix_y(i, k) * log(a_three(i, k)) + (1 - matrix_y(i, k)) * log(1 - a_three(i, k));
+%    end
+%end
+%J = (-1/m) * J;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+J = J + (lambda/(2*m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
 
 % -------------------------------------------------------------
 
