@@ -69,10 +69,10 @@ for i = 1:m
         matrix_y(i, y(i)) = 1;
     end
 end
-a_one = [ones(m, 1) X];
-a_two = [ones(m, 1) sigmoid(a_one * Theta1')];
-a_three = sigmoid(a_two * Theta2');
-J = (-1/m) * sum(sum(matrix_y .* log(a_three) + (1-matrix_y) .* log(1-a_three)));
+my_a_one = [ones(m, 1) X];
+my_a_two = [ones(m, 1) sigmoid(my_a_one * Theta1')];
+my_a_three = sigmoid(my_a_two * Theta2');
+J = (-1/m) * sum(sum(matrix_y .* log(my_a_three) + (1-matrix_y) .* log(1-my_a_three)));
 %for i = 1:m
 %    for k = 1:num_labels
 %        J = J + matrix_y(i, k) * log(a_three(i, k)) + (1 - matrix_y(i, k)) * log(1 - a_three(i, k));
@@ -81,6 +81,26 @@ J = (-1/m) * sum(sum(matrix_y .* log(a_three) + (1-matrix_y) .* log(1-a_three)))
 %J = (-1/m) * J;
 
 J = J + (lambda/(2*m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
+
+%delta_output = my_a_three - matrix_y;
+%delta_two = Theta2' * delta_output .* sigmoidGradient(my_a_one * Theta1');
+
+%Theta2_grad = (1/m) * (
+%delta_two = zeros(num_labels, size(Theta2, 2));
+%delta_one = zeros(size(Theta2, 2), size(Theta1, 2));
+for t = 1:m
+    a_one = [1 X(t, :)];
+    z_two = a_one * Theta1';
+    a_two = [1 sigmoid(z_two)];
+    z_three = a_two * Theta2';
+    a_three = sigmoid(z_three);
+    d_three = a_three - matrix_y(t);
+    d_two = (d_three * Theta2)(2:end) .* sigmoidGradient(z_two);
+    Theta2_grad = Theta2_grad + d_three' * a_two;
+    Theta1_grad = Theta1_grad + d_two' * a_one;
+
+Theta1_grad = (1/m) * Theta1_grad;
+Theta2_grad = (1/m) * Theta2_grad;
 
 % -------------------------------------------------------------
 
