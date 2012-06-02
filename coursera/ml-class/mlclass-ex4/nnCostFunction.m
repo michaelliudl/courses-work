@@ -61,27 +61,41 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-matrix_y = zeros(m, num_labels);
+matrix_y = [];%zeros(m, num_labels);
 for i = 1:m
-    if y(i) == 10
-        matrix_y(i, 10) = 1;
-    else
-        matrix_y(i, y(i)) = 1;
-    end
+    matrix_y = [matrix_y; 1:num_labels == y(i)];
 end
-a_one = [ones(m, 1) X];
-a_two = [ones(m, 1) sigmoid(a_one * Theta1')];
-a_three = sigmoid(a_two * Theta2');
-J = (-1/m) * sum(sum(matrix_y .* log(a_three) + (1-matrix_y) .* log(1-a_three)));
-%for i = 1:m
-%    for k = 1:num_labels
-%        J = J + matrix_y(i, k) * log(a_three(i, k)) + (1 - matrix_y(i, k)) * log(1 - a_three(i, k));
-%    end
-%end
-%J = (-1/m) * J;
+
+my_a_one = [ones(m, 1) X];
+my_z_two = my_a_one * Theta1';
+my_a_two = [ones(m, 1) sigmoid(my_z_two)];
+my_a_three = sigmoid(my_a_two * Theta2');
+J = (-1/m) * sum(sum(matrix_y .* log(my_a_three) + (1-matrix_y) .* log(1-my_a_three)));
 
 J = J + (lambda/(2*m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
 
+
+%for t = 1:m
+%    a_one = [1; X(t, :)'];
+%    z_two = Theta1 * a_one;
+%    a_two = [1; sigmoid(z_two)];
+%    z_three = Theta2 * a_two;
+%    a_three = sigmoid(z_three);
+%    delta_three = a_three - matrix_y(t)';
+%    delta_two = ((Theta2' * delta_three) .* (a_two .* (1 - a_two)))(2:end);
+%    Theta2_grad = Theta2_grad + (a_two * delta_three')';
+%    Theta1_grad = Theta1_grad + (a_one * delta_two')';
+%
+%Theta1_grad = (1/m) * Theta1_grad + lambda * Theta1;
+%Theta2_grad = (1/m) * Theta2_grad + lambda * Theta2;
+
+delta_three = my_a_three - matrix_y;
+delta_two = (Theta2' * delta_three')'(:, 2:end) .* sigmoidGradient(my_z_two);
+Theta1_grad = (1/m) * (delta_two' * my_a_one);
+Theta2_grad = (1/m) * (delta_three' * my_a_two);
+
+Theta1_grad = [Theta1_grad(:, 1) (Theta1_grad(:, 2:end) + (lambda/m) * Theta1(:, 2:end))];
+Theta2_grad = [Theta2_grad(:, 1) (Theta2_grad(:, 2:end) + (lambda/m) * Theta2(:, 2:end))];
 % -------------------------------------------------------------
 
 % =========================================================================
