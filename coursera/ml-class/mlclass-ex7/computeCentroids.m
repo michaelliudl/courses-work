@@ -25,8 +25,15 @@ centroids = zeros(K, n);
 %
 % Note: You can use a for-loop over the centroids to compute this.
 %
-
-
+for i = 1:K
+    samples = [];
+    for j = 1:m
+        if idx(j) == i
+            samples = [samples; X(j, :)];
+        end
+    end
+    centroids(i, :) = sum(samples) / length(samples);
+end
 
 
 

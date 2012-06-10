@@ -20,6 +20,18 @@ idx = zeros(size(X,1), 1);
 %
 % Note: You can use a for-loop over the examples to compute this.
 %
+m = size(X, 1);
+for i = 1:m
+    closest_dist = -1;
+    for j = 1:K
+        dist = sum((X(i, :) .- centroids(j, :)) .^ 2);
+        if closest_dist < 0 || dist < closest_dist
+            closest_dist = dist;
+            idx(i) = j;
+        end
+    end
+end
+
 
 
 
