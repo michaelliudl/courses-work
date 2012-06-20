@@ -24,18 +24,28 @@ centroids = zeros(K, n);
 %               centroid i.
 %
 % Note: You can use a for-loop over the centroids to compute this.
-%
-for i = 1:K
-    samples = [];
-    for j = 1:m
-        if idx(j) == i
-            samples = [samples; X(j, :)];
-        end
-    end
-    centroids(i, :) = sum(samples) / length(samples);
+
+% below loop impl pass tests but won't submit
+%for i = 1:K
+%    samples = [];
+%    for j = 1:m
+%        if idx(j) == i
+%            samples = [samples; X(j, :)];
+%        end
+%    end
+%    centroids(i, :) = sum(samples) ./ length(samples);
+%end
+
+
+idx_logical = zeros(m, K);
+for i = 1:m
+    idx_logical(i, idx(i)) = 1;
 end
-
-
+product = idx_logical' * X;
+count = sum(idx_logical);
+for i = 1:K
+    centroids(i, :) = product(i, :) ./ count(i);
+end
 
 
 
