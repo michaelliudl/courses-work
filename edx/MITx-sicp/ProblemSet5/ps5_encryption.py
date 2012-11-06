@@ -100,7 +100,14 @@ def buildCoder(shift):
     returns: dict
     """
     ### TODO.
-    
+    result = {}
+    for i in range(26):
+        result[string.ascii_uppercase[i]] = string.ascii_uppercase[(i + shift) % 26];
+        result[string.ascii_lowercase[i]] = string.ascii_lowercase[(i + shift) % 26];
+    return result
+
+#print buildCoder(3)
+#print buildCoder(9)
 
 def applyCoder(text, coder):
     """
@@ -111,7 +118,16 @@ def applyCoder(text, coder):
     returns: text after mapping coder chars to original text
     """
     ### TODO.
+    result = []
+    for t in text:
+        if t in coder:
+            result.append(coder[t])
+        else:
+            result.append(t)
+    return "".join(result)
     
+#print applyCoder("Hello, world!", buildCoder(3))
+#print applyCoder("Khoor, zruog!", buildCoder(23))
 
 def applyShift(text, shift):
     """
@@ -126,6 +142,7 @@ def applyShift(text, shift):
     """
     ### TODO.
     ### HINT: This is a wrapper function.
+    return applyCoder(text, buildCoder(shift))
     
 
 #
@@ -139,6 +156,16 @@ def findBestShift(wordList, text):
     returns: 0 <= int < 26
     """
     ### TODO
+    for shift in range(1, 26):
+        shifted_words = applyCoder(text, buildCoder(shift)).split(" ")
+        words_count = len(shifted_words)
+        valid_count = sum(map(lambda word: 1 if isWord(wordList, word) else 0, shifted_words))
+        if valid_count > words_count * 0.5:
+            return shift
+    return 0
+
+
+
 
 
 def decryptStory():
@@ -151,12 +178,20 @@ def decryptStory():
     returns: string - story in plain text
     """
     ### TODO.
-    return "Not yet implemented." # Remove this comment when you code the function
+    wordList = loadWords()
+    cipher_text = getStoryString()
+    best_shift = findBestShift(wordList, cipher_text)
+    plane_text = applyCoder(cipher_text, buildCoder(best_shift))
+    return plane_text
 
 #
 # Build data structures used for entire session and run encryption
 #
 
 if __name__ == '__main__':
-    wordList = loadWords()
-    decryptStory()
+    '''wordList = loadWords()
+    #cipher_text = applyCoder("Hello, world!", buildCoder(8))
+    cipher_text = "Gur gmpure'f anzr vF GnoVgun?"
+    cipher_text = "Fg, tml lzwjw aK s LS fsewv SDnaf!"
+    print findBestShift(wordList, cipher_text)'''
+    print decryptStory()
